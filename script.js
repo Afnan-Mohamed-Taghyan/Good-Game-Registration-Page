@@ -4,10 +4,13 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
     let hasError = false; 
 
     // name validation 
+
     const fullName = document.getElementById("fullName").value;
     const nameRegex = /^[A-Za-z\s]+$/; 
     const fullNameError = document.getElementById("fullNameError");
-    if (!nameRegex.test(fullName)) {
+
+    if (!nameRegex.test(fullName) || fullName.length < 12 || fullName.length > 50) {
+        fullNameError.textContent = "Full name should only contain alphabets, spaces, and be between 12 and 50 characters!";
         fullNameError.style.display = "block"; 
         hasError = true;
     } else {
@@ -48,26 +51,25 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
     } else {
         confirmPasswordError.style.display = "none"; 
     }
-    // no errors, data stored in localStorage
-    if (!hasError) {
-        // Save the valid form data into localStorage
-        localStorage.setItem('fullName', fullName);
-        localStorage.setItem('email', email);
-        localStorage.setItem('password', password); 
 
-        // alert("Form submitted successfully! Data has been saved to localStorage.");
-         // Clear data
-         document.getElementById("signupForm").reset();
-    }
-    });
-     // Retrieve data from localStorage if available and pre-fill the form
-     window.onload = function() {
-        const storedName = localStorage.getItem('fullName');
-        const storedEmail = localStorage.getItem('email');
-        const storedPassword = localStorage.getItem('password');
+   // Retrieve the existing users or create new one
+   const users = JSON.parse(localStorage.getItem('users')) || [];
 
-        if (storedName) document.getElementById('fullName').value = storedName;
-        if (storedEmail) document.getElementById('email').value = storedEmail;
-        if (storedPassword) document.getElementById('password').value = storedPassword;
-    document.getElementById("signupForm").reset();
-    };
+   // Check if email exists
+   if (users.some(user => user.email === email)) {
+       alert("Email already registered. Use a different email.");
+       return;
+   }
+
+   // Add new user
+   users.push({ fullName, email, password });
+
+   // Save  users localStorage
+   localStorage.setItem('users', JSON.stringify(users));
+
+   // Success alert and form reset
+   alert("Account created successfully!");
+   document.getElementById("signupForm").reset();
+});
+
+
