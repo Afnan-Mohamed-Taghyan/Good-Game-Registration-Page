@@ -3,8 +3,7 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
 
     let hasError = false; 
 
-    // name validation 
-
+    // Name validation
     const fullName = document.getElementById("fullName").value;
     const nameRegex = /^[A-Za-z\s]+$/; 
     const fullNameError = document.getElementById("fullNameError");
@@ -44,7 +43,7 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
         passwordError.style.display = "none"; 
     }
 
-    // Confirm password matche
+    // Confirm password matches
     if (password !== confirmPassword) {
         confirmPasswordError.style.display = "block"; 
         hasError = true;
@@ -52,24 +51,33 @@ document.getElementById("signupForm").addEventListener("submit", function(event)
         confirmPasswordError.style.display = "none"; 
     }
 
-   // Retrieve the existing users or create new one
-   const users = JSON.parse(localStorage.getItem('users')) || [];
+    // If any error exists, stop execution
+    if (hasError) return;
 
-   // Check if email exists
-   if (users.some(user => user.email === email)) {
-       alert("Email already registered. Use a different email.");
-       return;
-   }
+    // Retrieve the existing users or create new one
+    const users = JSON.parse(localStorage.getItem('users')) || [];
 
-   // Add new user
-   users.push({ fullName, email, password });
+    // Check if email exists
+    if (users.some(user => user.email === email)) {
+        return;
+    }
 
-   // Save  users localStorage
-   localStorage.setItem('users', JSON.stringify(users));
+    // Add new user
+    users.push({ fullName, email, password });
 
-   // Success alert and form reset
-   alert("Account created successfully!");
-   document.getElementById("signupForm").reset();
+    // Save users to localStorage
+    localStorage.setItem('users', JSON.stringify(users));
+
+    // Success alert and form reset
+    document.getElementById("signupForm").reset();
+
+    // Navigate to the URL specified in the button's data-url attribute
+    const signUpButton = document.querySelector(".enter");
+    const gameUrl = signUpButton.getAttribute("data-url");
+
+    // Use window.open with '_self' to open in the same tab
+    window.open(gameUrl, '_self');
 });
+
 
 
